@@ -1,5 +1,5 @@
 [package]
-name = "fuzzcheck-graph-input"
+name = "fuzzcheck_graph_input"
 version = "0.1.0"
 authors = ["Loïc Lecrenier <loic.lecrenier@me.com>"]
 edition = "2018"
@@ -8,4 +8,4 @@ edition = "2018"
 rand = "0.7.0"
 serde = { version = "1.0.94", features = ["derive"] }
 serde_json = "1.0.40"
-fuzzcheck_input = { git = "https://github.com/loiclec/fuzzcheck-input.git", branch = "master" }
+fuzzcheck_input = { git = "https://github.com/loiclec/fuzzcheck-rs-input.git", branch = "master" }
