@@ -10,6 +10,8 @@ use rand::distributions::WeightedIndex;
 
 use serde::{Serialize, Deserialize};
 
+use std::hash::{Hash, Hasher};
+
 use crate::graph::*;
 
 #[derive(Clone, Copy, Debug)]
@@ -37,7 +39,7 @@ static MUTATORS: &[GraphMutator] = &[
 static WEIGHTS: &[usize] = &[5, 5, 25, 5, 5, 10, 10, 5];
 
 pub struct GraphGenerator <G> 
-    where G: InputGenerator
+    where G: InputGenerator, G::Input: Hash
 {
     g: G,
     rng: ThreadRng,
@@ -46,7 +48,7 @@ pub struct GraphGenerator <G>
 
 
 impl<G> GraphGenerator<G>
-    where G: InputGenerator
+    where G: InputGenerator, G::Input: Hash
 {
    pub fn new(g: G) -> Self {
         Self {
@@ -163,13 +165,21 @@ impl<G> GraphGenerator<G>
 
 impl<G> InputGenerator for GraphGenerator<G>
     where 
-        G: InputGenerator,
+        G: InputGenerator, G::Input: Hash,
         G::Input: Serialize + for<'de> Deserialize<'de>
 {
     type Input = Graph<G::Input>;
 
+    fn hash<H>(input: &Self::Input, state: &mut H) where H: Hasher {
+        input.hash(state);
+    }
+
     fn complexity(input: &Self::Input) -> f64 {
         input.nodes.iter().fold(0.0, |c, n| c + 1.0 + (n.edges.len() as f64))
+    }
+
+    fn base_input() -> Self::Input {
+        Graph::new()
     }
 
     fn new_input(&mut self, max_cplx: f64) -> Self::Input {
