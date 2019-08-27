@@ -1,0 +1,29 @@
+
+[package]
+name = "graph-fuzz"
+version = "0.0.0"
+authors = ["Automatically generated"]
+publish = false
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies.rand]
+version = "0.7.0"
+
+[dependencies.miniserde]
+version = "0.1.12"
+
+[dependencies.graph]
+path = ".."
+
+[dependencies.fuzzcheck_input]
+"path" = "/Users/loiclecrenier/Documents/rust/real_world_fuzzcheck/fuzzcheck-rs/fuzzcheck_input"
+
+# Prevent this from interfering with workspaces
+[workspace]
+members = ["."]
+
+[[bin]]
+name = "target1"
+path = "fuzz_targets/target1.rs"

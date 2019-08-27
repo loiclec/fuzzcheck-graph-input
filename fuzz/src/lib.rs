@@ -1,18 +1,20 @@
+extern crate graph;
+use graph::*;
 
 extern crate fuzzcheck;
 
 use fuzzcheck::input::*;
 
+extern crate rand;
 use rand::Rng;
 use rand::rngs::ThreadRng;
 use rand::distributions::Distribution;
 use rand::distributions::WeightedIndex;
 
-use serde::{Serialize, Deserialize};
+extern crate miniserde;
+use miniserde::{json, Serialize, Deserialize};
 
 use std::hash::{Hash, Hasher};
-
-use crate::graph::*;
 
 #[derive(Clone, Copy, Debug)]
 pub enum GraphMutator {
@@ -166,7 +168,7 @@ impl<G> GraphGenerator<G>
 impl<G> InputGenerator for GraphGenerator<G>
     where 
         G: InputGenerator, G::Input: Hash,
-        G::Input: Serialize + for<'de> Deserialize<'de>
+        G::Input: Serialize + Deserialize
 {
     type Input = Graph<G::Input>;
 
@@ -208,10 +210,14 @@ impl<G> InputGenerator for GraphGenerator<G>
         }
         false
     }
-    fn from_data(data: &Vec<u8>) -> Option<Self::Input> {
-        serde_json::from_slice(data).ok()
+    fn from_data(data: &[u8]) -> Option<Self::Input> {
+        if let Ok(s) = std::str::from_utf8(data) {
+            json::from_str(s).ok()
+        } else {
+            None
+        }
     }
     fn to_data(input: &Self::Input) -> Vec<u8> {
-        serde_json::to_vec_pretty(input).unwrap()
+        json::to_string(input).into_bytes()
     }
 }
