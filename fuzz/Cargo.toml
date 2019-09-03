@@ -18,7 +18,7 @@ version = "0.1.12"
 path = ".."
 
 [dependencies.fuzzcheck_input]
-"path" = "/Users/loiclecrenier/Documents/rust/real_world_fuzzcheck/fuzzcheck-rs/fuzzcheck_input"
+"git" = "https://github.com/loiclec/fuzzcheck-rs"
 
 # Prevent this from interfering with workspaces
 [workspace]
